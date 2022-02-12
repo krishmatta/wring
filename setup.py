@@ -8,7 +8,9 @@ setup(
     packages=find_packages(),
     install_requires=[
         "click",
+        "oauthlib",
         "pyyaml",
+        "ring_doorbell",
     ],
     entry_points={
         "console_scripts": [
