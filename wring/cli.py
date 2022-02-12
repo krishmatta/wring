@@ -17,6 +17,16 @@ def cli():
     if not os.path.isdir(cache_dir_path):
         os.mkdir(cache_dir_path)
     ring = connect_ring(config, os.path.join(cache_dir_path, "cache"))
+    prev_ding_event_ids = {}
+    for doorbell in ring.devices()["doorbots"]:
+        prev_ding_event_ids[doorbell.id] = doorbell.history(kind="ding", limit=1)[0]["id"]
+    while True:
+        for doorbell in ring.devices()["doorbots"]:
+            curr_event = doorbell.history(kind="ding", limit=1)[0]
+            if curr_event["id"] != prev_ding_event_ids[doorbell.id]:
+                log_print("New Ding Event!")
+                prev_ding_event_ids[doorbell.id] = curr_event["id"]
+        time.sleep(1)
     
 def log_print(msg):
     click.echo(f"[{datetime.now()}] {msg}")
