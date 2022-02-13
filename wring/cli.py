@@ -19,11 +19,14 @@ def cli():
     ring = connect_ring(config, os.path.join(cache_dir_path, "cache"))
     prev_ding_event_ids = {}
     for doorbell in ring.devices()["doorbots"]:
-        prev_ding_event_ids[doorbell.id] = doorbell.history(kind="ding", limit=1)[0]["id"]
+        prev_ding_event = doorbell.history(kind="ding", limit=1)
+        prev_ding_event_id = prev_ding_event[0]["id"] if prev_ding_event else None
+        prev_ding_event_ids[doorbell.id] = prev_ding_event_id
     while True:
         for doorbell in ring.devices()["doorbots"]:
-            curr_event = doorbell.history(kind="ding", limit=1)[0]
-            if curr_event["id"] != prev_ding_event_ids[doorbell.id]:
+            curr_event = doorbell.history(kind="ding", limit=1)
+            curr_event = curr_event[0] if curr_event else None
+            if curr_event and curr_event["id"] != prev_ding_event_ids[doorbell.id]:
                 log_print("New Ding Event!")
                 prev_ding_event_ids[doorbell.id] = curr_event["id"]
         time.sleep(1)
