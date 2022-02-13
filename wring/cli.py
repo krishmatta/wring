@@ -1,6 +1,7 @@
 import click
 import json
 import os
+import requests
 import time
 import yaml
 
@@ -27,7 +28,10 @@ def cli():
             curr_event = doorbell.history(kind="ding", limit=1)
             curr_event = curr_event[0] if curr_event else None
             if curr_event and curr_event["id"] != prev_ding_event_ids[doorbell.id]:
-                log_print("New Ding Event!")
+                log_print(f"Doorbell '{doorbell.name}' has been rung")
+                time.sleep(5)
+                download_video(doorbell, cache_dir_path)
+                log_print(f"Downloaded ring video for doorbell '{doorbell.name}'")
                 prev_ding_event_ids[doorbell.id] = curr_event["id"]
         time.sleep(1)
     
@@ -56,3 +60,10 @@ def connect_ring(config, cache_file):
 def update_token(token, cache_file):
     with open(cache_file, "w") as f:
         f.write(json.dumps(token))
+
+def download_video(doorbell, out_dir):
+    r = requests.get(doorbell.recording_url(doorbell.last_recording_id), stream=True)
+    with open(os.path.join(out_dir, "curr_ding.mp4"), "wb") as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
