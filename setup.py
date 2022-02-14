@@ -8,7 +8,10 @@ setup(
     packages=find_packages(),
     install_requires=[
         "click",
+        "face_recognition",
+        "numpy",
         "oauthlib",
+        "opencv-python",
         "pyyaml",
         "ring_doorbell",
     ],
