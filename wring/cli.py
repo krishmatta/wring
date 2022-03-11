@@ -112,11 +112,11 @@ def recognize_video_faces(video_path, known_face_encodings, known_face_names):
                     face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
                     best_match_index = np.argmin(face_distances)
                     if matches[best_match_index]:
-                        name = known_face_names[best_match_index]
+                        curr_name = known_face_names[best_match_index]
                         # Optimize facial recognition by removing already found faces
                         known_face_encodings = known_face_encodings[:best_match_index] + known_face_encodings[best_match_index + 1:]
                         known_face_names = known_face_names[:best_match_index] + known_face_names[best_match_index + 1:]
-                    found_known_faces[name] = True
+                    found_known_faces[curr_name] = True
             process_frame = not process_frame
         else:
             break
