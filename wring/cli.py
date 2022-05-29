@@ -7,6 +7,7 @@ import os
 import requests
 import time
 import yaml
+import logging
 
 from datetime import datetime
 from oauthlib.oauth2 import MissingTokenError
@@ -14,6 +15,7 @@ from ring_doorbell import Ring, Auth
 
 @click.command()
 def cli():
+    logging.basicConfig(filename=os.path.join(os.environ["HOME"], f".cache/wring/logs/wring_{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.log"), level=logging.INFO, format='%(message)s')
     log_print("Loading configuration...")
     config = load_config()
     log_print("Loading faces...")
@@ -49,7 +51,9 @@ def cli():
         time.sleep(1)
     
 def log_print(msg):
-    click.echo(f"[{datetime.now()}] {msg}")
+    msg = f"[{datetime.now()}] {msg}"
+    click.echo(msg)
+    logging.info(msg)
 
 def load_config():
     config_file_path = os.path.join(os.environ["HOME"], ".config/wring/config.yml")
