@@ -1,0 +1,10 @@
+click
+DateTime
+face-recognition
+numpy
+oauthlib
+opencv-python
+PyYAML
+requests
+ring-doorbell
+urllib3
